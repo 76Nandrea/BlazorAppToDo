@@ -1,0 +1,86 @@
+﻿@page "/deletelogical"
+@using BlazorAppToDo.Model
+@using Microsoft.EntityFrameworkCore
+@inject BlazorAppToDo.Data.MyDBContext DB
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+
+
+<h3>DeleteLogical</h3>
+<hr />
+
+<div>
+    @if (todo is null)
+    {
+        <p>Loading......</p>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@todo.Title</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Create Date</dt>
+            <dd class="col-sm-10">@todo.Createdt</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Deadline</dt>
+            <dd class="col-sm-10">@todo.Deadline</dd>
+        </dl>
+
+        <EditForm method="post" Model="todo" OnValidSubmit="DeleteUserLogical" FormName="delete" Enhance>
+            <button class="btn btn-danger mb-4 mt-3" type="submit" disabled="@(todo is null)">Delete</button>
+            <button type="button" class="btn btn-primary mb-4 mt-3" onclick="location.href = '@("/ToDoIndex")'">Back</button>
+        </EditForm>
+    }
+</div>
+@code {
+    public Todo? todo = new();
+
+
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        todo = await DB.Todos.FirstOrDefaultAsync(x => x.Id == Id);
+        if (todo is null)
+        {
+            NavManager.NavigateTo("/Error");
+        }
+    }
+
+    //törlés függyvény
+    public async Task DeleteUserLogical()
+    {
+        DB.Attach(todo!).State = EntityState.Modified;
+        try
+        {
+            todo!.ShowData = false;
+            DB.Todos.Update(todo!);
+            await DB.SaveChangesAsync();
+            NavManager.NavigateTo("/ToDoIndex");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!DeleteLogicalExp(todo!.Id))
+            {
+                NavManager.NavigateTo("/error");
+            }
+            else
+            {
+                throw;
+            }
+
+        }
+
+
+    }
+    bool DeleteLogicalExp(int e)
+    {
+        return DB.Todos.Any(e => e.Id == Id);
+    }
+}

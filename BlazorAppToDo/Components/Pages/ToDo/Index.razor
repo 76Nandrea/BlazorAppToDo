@@ -1,0 +1,51 @@
+﻿@page "/ToDoIndex"
+@using BlazorAppToDo.Model
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject BlazorAppToDo.Data.MyDBContext DB
+@rendermode InteractiveServer
+
+<h3>My ToDo List</h3>
+<hr/>
+<button type="button" class="btn btn-primary mb-3 mt-3" onclick="location.href = '@("/Create")'">New ToDo item</button>
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="page-size-chooser">
+            Items per page:
+            <select @bind="@pagination.ItemsPerPage">
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+            </select>
+        </div>
+
+        <QuickGrid Class="table" Items="DB.Todos.Where(z=>z.ShowData)" Pagination="@pagination">
+            <PropertyColumn Title="To Do " Property="td=>td.Title" Sortable="true" />
+            <PropertyColumn Title="Deadline" Property="@(dl=>dl.Deadline)" Sortable="true" Format="yyyy.MM.dd" />
+            <PropertyColumn Title="Status" Property="ia=>ia.IsActive" Sortable="true" />
+            
+            <TemplateColumn Title="Completed">
+               <template>@{<input type="checkbox" @bind="context.IsActive"/>}</template>
+            </TemplateColumn>
+
+            <TemplateColumn Context="Todo" Title="Edit">
+                <a href="@($"edittodo?Id={Todo.Id}")" class="btn btn-info">Edit</a>
+                <a href="@($"deletelogical?Id={Todo.Id}")" class="btn btn-danger">Delete Logical</a>
+            </TemplateColumn>
+        </QuickGrid>
+        <Paginator State="@pagination"/>
+    </div>
+</div>
+
+
+
+
+
+
+@code {
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+}

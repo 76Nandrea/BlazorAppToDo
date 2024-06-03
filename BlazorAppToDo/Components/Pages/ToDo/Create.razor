@@ -1,0 +1,52 @@
+﻿@page "/Create"
+@using Microsoft.EntityFrameworkCore
+@using BlazorAppToDo.Model
+@inject BlazorAppToDo.Data.MyDBContext DB
+@inject NavigationManager NavManager
+
+<h3>Create</h3>
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="TodoDB" OnValidSubmit="AddTodo" FormName="CreateTodo" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <InputText id="title" @bind-Value="TodoDB.Title" class="form-control" />
+                <ValidationMessage For="()=>TodoDB.Title" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="cd" class="form-label">Create date</label>
+                <InputDate id="cd" @bind-Value="TodoDB.Createdt" class="form-control" />
+                <ValidationMessage For="()=>TodoDB.Createdt" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="dd" class="form-label">Deadline date</label>
+                <InputDate id="dd" @bind-Value="TodoDB.Deadline" class="form-control" />
+                <ValidationMessage For="()=>TodoDB.Deadline" class="text-danger" />
+            </div>
+          
+            <div>
+                <label for="ia" class="form-label">Should DO</label>
+                <InputCheckbox id="ia" @bind-Value="TodoDB.IsActive" />
+            </div>
+            <button type="submit" class="btn btn-primary mb-4 mt-3">Save</button>
+            <button type="button" class="btn btn-primary mb-4 mt-3" onclick="location.href = '@("/ToDoIndex")'">Back</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    public Todo TodoDB { get; set; } = new();
+
+
+    private async Task AddTodo()
+    {
+
+        DB.Todos.Add(TodoDB);
+        await DB.SaveChangesAsync();
+        NavManager.NavigateTo("/ToDoIndex");
+    }
+}

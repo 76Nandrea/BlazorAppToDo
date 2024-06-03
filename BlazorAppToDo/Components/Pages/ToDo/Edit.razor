@@ -1,0 +1,97 @@
+﻿@page "/edittodo"
+@using Microsoft.EntityFrameworkCore
+@using BlazorAppToDo.Model
+@inject BlazorAppToDo.Data.MyDBContext DB
+@inject NavigationManager NavManager
+
+<h3>Edit</h3>
+<hr/>
+@if (EditTodoDB is null)
+{
+    <p>LOADING......</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="EditTodoDB" OnValidSubmit="UpdateTodo" FormName="update" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" />
+                <div class="mb-3">
+                    <label for="id" class="form-label">ID</label>
+                    <InputNumber id="id" @bind-Value="EditTodoDB.Id" class="form-control" />
+                    <ValidationMessage For="()=>EditTodoDB.Id" class="text-danger" />
+                </div>
+               
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <InputText id="title" @bind-Value="EditTodoDB.Title" class="form-control" />
+                    <ValidationMessage For="()=>EditTodoDB.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="cd" class="form-label">Create date</label>
+                    <InputDate id="cd" @bind-Value="EditTodoDB.Createdt" class="form-control" />
+                    <ValidationMessage For="()=>EditTodoDB.Createdt" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="dd" class="form-label">Deadline date</label>
+                    <InputDate id="dd" @bind-Value="EditTodoDB.Deadline" class="form-control" />
+                    <ValidationMessage For="()=>EditTodoDB.Deadline" class="text-danger" />
+                </div>
+
+                <div>
+                    <label for="ia" class="form-label">Status</label>
+                    <InputCheckbox id="ia" @bind-Value="EditTodoDB.IsActive" />
+                </div>
+                <button type="submit" class="btn btn-primary mb-4 mt-3">Save</button>
+                <button type="button" class="btn btn-primary mb-4 mt-3" onclick="location.href = '@("/ToDoIndex")'">Back</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code{
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Todo? EditTodoDB { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditTodoDB ??= await DB.Todos.FirstOrDefaultAsync(a=> a.Id == Id);
+        if(EditTodoDB is null)
+        {
+            NavManager.NavigateTo("/Error");
+        }
+    }
+
+    public async Task UpdateTodo()
+    {
+        DB.Attach(EditTodoDB).State = EntityState.Modified;
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch(DbUpdateConcurrencyException)
+        {
+            if (!EditTodoDBExc(EditTodoDB!.Id))
+            {
+                NavManager.NavigateTo("/Error");
+
+            }
+            else
+            {
+                throw;
+            }
+
+        }
+        NavManager.NavigateTo("/ToDoIndex");
+    }
+
+    bool EditTodoDBExc(int id) 
+    {
+        return DB.Todos.Any(e => e.Id == id);
+    }
+}
