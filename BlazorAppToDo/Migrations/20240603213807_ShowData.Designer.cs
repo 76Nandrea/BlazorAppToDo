@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorAppToDo.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240603202248_Showdatalast")]
-    partial class Showdatalast
+    [Migration("20240603213807_ShowData")]
+    partial class ShowData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

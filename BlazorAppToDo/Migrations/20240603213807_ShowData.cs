@@ -5,7 +5,7 @@
 namespace BlazorAppToDo.Migrations
 {
     /// <inheritdoc />
-    public partial class Showdatalast : Migration
+    public partial class ShowData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

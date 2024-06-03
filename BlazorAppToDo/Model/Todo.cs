@@ -15,8 +15,9 @@ namespace BlazorAppToDo.Model
         [MaxLength(50)]
         public string? Title { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public bool ShowData { get; set; } = true;
 
+        public bool IsActive { get; set; } = true;
 
         [Required]
         [DataType(DataType.DateTime)]
@@ -29,7 +30,6 @@ namespace BlazorAppToDo.Model
         [Datecheck]
         public DateTime Deadline { get; set; } = new DateTime(2024, 06, 01);
 
-        public bool ShowData { get; set; } = true;
 
 
     }
