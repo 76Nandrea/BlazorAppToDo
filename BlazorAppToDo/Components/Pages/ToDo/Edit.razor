@@ -18,13 +18,6 @@ else
                 <DataAnnotationsValidator />
                 <ValidationSummary class="text-danger" />
                 <div class="mb-3">
-                    <label for="id" class="form-label">ID</label>
-                    <InputNumber id="id" @bind-Value="EditTodoDB.Id" class="form-control" />
-                    <ValidationMessage For="()=>EditTodoDB.Id" class="text-danger" />
-                </div>
-               
-
-                <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
                     <InputText id="title" @bind-Value="EditTodoDB.Title" class="form-control" />
                     <ValidationMessage For="()=>EditTodoDB.Title" class="text-danger" />
