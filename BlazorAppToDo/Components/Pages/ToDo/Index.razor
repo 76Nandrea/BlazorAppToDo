@@ -28,7 +28,7 @@
             <PropertyColumn Title="Status" Property="ia=>ia.IsActive" Sortable="true" />
             
             <TemplateColumn Title="Completed">
-               <template>@{<input type="checkbox" @bind="context.IsActive"/>}</template>
+              @{<input type="checkbox" @bind="context.IsActive"/>}
             </TemplateColumn>
 
             <TemplateColumn Context="Todo" Title="Edit">
